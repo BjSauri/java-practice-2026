@@ -3,10 +3,8 @@ package ru.itis.shop.user.domain;
 public class User {
 
     private String id;
-
     private String email;
     private String password;
-
     private String profileDescription;
 
     public User(String id, String email, String password, String profileDescription) {

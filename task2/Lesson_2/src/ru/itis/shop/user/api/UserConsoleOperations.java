@@ -1,7 +1,9 @@
 package ru.itis.shop.user.api;
 
 import ru.itis.shop.user.application.UserService;
+import ru.itis.shop.user.domain.User;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class UserConsoleOperations {
@@ -28,6 +30,9 @@ public class UserConsoleOperations {
                 signIn();
             }
             break;
+            case "4":{
+                updateInformation();
+            }
             case "0": {
                 System.exit(0);
             }
@@ -38,6 +43,7 @@ public class UserConsoleOperations {
         System.out.println("1. Регистрация пользователя");
         System.out.println("2. Вход в систему");
         System.out.println("3. Найти пользователя по id");
+        System.out.println("4. Обновить данные пользователя по почте");
         System.out.println("0. Выход");
     }
 
@@ -68,6 +74,35 @@ public class UserConsoleOperations {
         }
     }
 
+    private void updateInformation(){
+        System.out.println("Введите почту пользователя, которого хотите обновть");
+        String email = scanner.nextLine();
 
+        Optional<User> userOptional = userService.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            System.out.println("Пользователь с такой почтой не найден!");
+            return;
+        }
+
+        User existingUser = userOptional.get();
+        System.out.println("Найден пользователь:");
+        System.out.println("Email: " + existingUser.getEmail());
+        System.out.println("Описание профиля: " + existingUser.getProfileDescription());
+
+        System.out.println("\nВведите новый пароль (или оставьте пустым, чтобы не менять):");
+        String newPassword = scanner.nextLine();
+        System.out.println("Введите новое описание профиля (или оставьте пустым, чтобы не менять):");
+        String newProfileDescription = scanner.nextLine();
+
+        boolean updated = userService.updateUserByEmail(email, newPassword, newProfileDescription);
+
+        if (updated) {
+            System.out.println("Данные пользователя успешно обновлены!");
+        } else {
+            System.out.println("Не удалось обновить данные пользователя.");
+        }
+
+    }
 
 }
